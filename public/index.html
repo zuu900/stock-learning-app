@@ -6,7 +6,55 @@
     <title>株学習アプリ</title>
   </head>
   <body>
-    <h1>株学習アプリへようこそ！</h1>
-    <p>最初のページが正常に表示されました。</p>
+    <h1>株学習コンテンツ一覧</h1>
+    <div id="lessons-container">
+      <p>データを読み込み中...</p>
+    </div>
+
+    <script>
+      // ページが読み込まれたらAPIを呼び出す
+      window.addEventListener("DOMContentLoaded", async () => {
+        const container = document.getElementById("lessons-container");
+
+        try {
+          const response = await fetch("/api/lessons");
+          const lessons = await response.json();
+
+          // 読み込み中メッセージをクリア
+          container.innerHTML = "";
+
+          if (lessons.length === 0) {
+            container.innerHTML = "<p>コンテンツがありません。</p>";
+            return;
+          }
+
+          // 取得したデータからHTML要素を生成
+          lessons.forEach((lesson) => {
+            const lessonDiv = document.createElement("div");
+            lessonDiv.style.border = "1px solid #ccc";
+            lessonDiv.style.padding = "10px";
+            lessonDiv.style.marginBottom = "10px";
+
+            const title = document.createElement("h2");
+            title.textContent = lesson.title;
+
+            const category = document.createElement("p");
+            category.textContent = `カテゴリ: ${lesson.category}`;
+
+            const content = document.createElement("p");
+            content.textContent = lesson.content;
+
+            lessonDiv.appendChild(title);
+            lessonDiv.appendChild(category);
+            lessonDiv.appendChild(content);
+
+            container.appendChild(lessonDiv);
+          });
+        } catch (error) {
+          container.innerHTML = "<p>データの読み込みに失敗しました。</p>";
+          console.error(error);
+        }
+      });
+    </script>
   </body>
 </html>

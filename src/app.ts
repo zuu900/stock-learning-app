@@ -1,18 +1,22 @@
 import express, { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client"; // PrismaClientをインポート
 
-// Expressアプリを作成
+const prisma = new PrismaClient(); // PrismaClientのインスタンスを作成
 const app = express();
-const port = process.env.PORT || 3000; // Renderが指定するポート、なければ3000番を使う
+const port = process.env.PORT || 3000;
 
-// 'public'フォルダ内の静的ファイル（HTML, CSSなど）を配信する設定
 app.use(express.static("public"));
 
-// ルートURL ('/') にアクセスがあった場合にテキストを返す
-app.get("/api/hello", (req: Request, res: Response) => {
-  res.send("Hello from server!");
+// 【新規追加】学習コンテンツを全件取得するAPIエンドポイント
+app.get("/api/lessons", async (req: Request, res: Response) => {
+  try {
+    const lessons = await prisma.stockLesson.findMany(); // DBから全件取得
+    res.json(lessons); // JSON形式で返す
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch lessons" });
+  }
 });
 
-// サーバーを指定したポートで起動
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
