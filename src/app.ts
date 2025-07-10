@@ -29,7 +29,8 @@ app.get("/api/lessons/:id", async (req: Request, res: Response) => {
   const lessonId = parseInt(id, 10);
 
   if (isNaN(lessonId)) {
-    return res.status(400).json({ error: "Invalid ID format" });
+    res.status(400).json({ error: "Invalid ID format" });
+    return;
   }
 
   try {
@@ -38,7 +39,8 @@ app.get("/api/lessons/:id", async (req: Request, res: Response) => {
     });
 
     if (!lesson) {
-      return res.status(404).json({ error: "Lesson not found" });
+      res.status(404).json({ error: "Lesson not found" });
+      return;
     }
 
     res.json(lesson);
