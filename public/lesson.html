@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学習コンテンツ詳細</title>
+  </head>
+  <body>
+    <div id="lesson-detail-container">
+      <p>データを読み込み中...</p>
+    </div>
+    <br />
+    <a href="/">一覧に戻る</a>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", async () => {
+        const container = document.getElementById("lesson-detail-container");
+
+        // URLからidを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const lessonId = urlParams.get("id");
+
+        if (!lessonId) {
+          container.innerHTML = "<p>IDが指定されていません。</p>";
+          return;
+        }
+
+        try {
+          // idを使って新しいAPIを呼び出す
+          const response = await fetch(`/api/lessons/${lessonId}`);
+
+          if (!response.ok) {
+            throw new Error("データの取得に失敗しました。");
+          }
+
+          const lesson = await response.json();
+
+          container.innerHTML = `
+            <h1>${lesson.title}</h1>
+            <p><strong>カテゴリ:</strong> ${lesson.category}</p>
+            <hr>
+            <p>${lesson.content.replace(/\n/g, "<br>")}</p>
+          `;
+        } catch (error) {
+          container.innerHTML = `<p>${error.message}</p>`;
+          console.error(error);
+        }
+      });
+    </script>
+  </body>
+</html>

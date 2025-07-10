@@ -30,6 +30,11 @@
 
           // 取得したデータからHTML要素を生成
           lessons.forEach((lesson) => {
+            const link = document.createElement("a");
+            link.href = `/lesson.html?id=${lesson.id}`;
+            link.style.textDecoration = "none";
+            link.style.color = "inherit";
+
             const lessonDiv = document.createElement("div");
             lessonDiv.style.border = "1px solid #ccc";
             lessonDiv.style.padding = "10px";
