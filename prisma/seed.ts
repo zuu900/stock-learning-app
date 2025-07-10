@@ -2,11 +2,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log("Seeding process started...");
+
   // 既存のデータを全て削除
   await prisma.stockLesson.deleteMany();
 
   // 新しいデータを投入
-  await prisma.stockLesson.createMany({
+  const createResult = await prisma.stockLesson.createMany({
     data: [
       {
         title: "株式投資の第一歩：証券口座を開設しよう",
@@ -40,13 +42,17 @@ async function main() {
       },
     ],
   });
+
+  console.log(`Seeding complete. Created ${createResult.count} records.`);
 }
 
 main()
   .catch((e) => {
+    console.error("An error occurred during seeding:");
     console.error(e);
     process.exit(1);
   })
   .finally(async () => {
+    console.log("Disconnecting from database...");
     await prisma.$disconnect();
   });
