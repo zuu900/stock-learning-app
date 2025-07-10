@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && prisma db push --accept-data-loss && npm run prisma:seed && tsc",
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
     "prisma:seed": "ts-node prisma/seed.ts"

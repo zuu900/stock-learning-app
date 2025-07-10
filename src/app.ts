@@ -26,9 +26,15 @@ app.get("/api/lessons", async (req: Request, res: Response) => {
 // 特定の学習コンテンツをIDで取得するAPI
 app.get("/api/lessons/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
+  const lessonId = parseInt(id, 10);
+
+  if (isNaN(lessonId)) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
   try {
     const lesson = await prisma.stockLesson.findUnique({
-      where: { id: Number(id) },
+      where: { id: lessonId },
     });
 
     if (!lesson) {
@@ -37,7 +43,7 @@ app.get("/api/lessons/:id", async (req: Request, res: Response) => {
 
     res.json(lesson);
   } catch (error) {
-    console.error(`Error fetching lesson with id ${id}:`, error); // エラーログを詳細化
+    console.error(`Error fetching lesson with id ${lessonId}:`, error); // エラーログを詳細化
     res.status(500).json({ error: "Failed to fetch lesson" });
   }
 });
