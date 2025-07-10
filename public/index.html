@@ -34,11 +34,13 @@
             link.href = `/lesson.html?id=${lesson.id}`;
             link.style.textDecoration = "none";
             link.style.color = "inherit";
+            link.style.display = "block"; // aタグをブロック要素にする
 
             const lessonDiv = document.createElement("div");
             lessonDiv.style.border = "1px solid #ccc";
             lessonDiv.style.padding = "10px";
             lessonDiv.style.marginBottom = "10px";
+            lessonDiv.style.cursor = "pointer"; // カーソルをポインターに変更
 
             const title = document.createElement("h2");
             title.textContent = lesson.title;
@@ -47,13 +49,19 @@
             category.textContent = `カテゴリ: ${lesson.category}`;
 
             const content = document.createElement("p");
-            content.textContent = lesson.content;
+            // コンテンツが長い場合に省略して表示
+            const shortContent =
+              lesson.content.length > 100
+                ? lesson.content.substring(0, 100) + "..."
+                : lesson.content;
+            content.textContent = shortContent;
 
             lessonDiv.appendChild(title);
             lessonDiv.appendChild(category);
             lessonDiv.appendChild(content);
 
-            container.appendChild(lessonDiv);
+            link.appendChild(lessonDiv);
+            container.appendChild(link);
           });
         } catch (error) {
           container.innerHTML = "<p>データの読み込みに失敗しました。</p>";
