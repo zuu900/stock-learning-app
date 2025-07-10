@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 app.use(express.static("public"));
 
 // ▼▼▼▼▼【ここに追加】▼▼▼▼▼
-// ヘルスチェック用のAPIエンドポイント
+// ヘルスチェック用のAPIエンドポイントを追加
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).send("OK");
 });
