@@ -54,28 +54,21 @@ async function main() {
     data: [
       {
         tickerName: "架空テック株",
-        // JSON.stringifyで配列を文字列に変換して保存
-        chartData: JSON.stringify([
-          100, 102, 101, 105, 104, 108, 107, 110, 109, 112,
-        ]),
+        chartData: [100, 102, 101, 105, 104, 108, 107, 110, 109, 112],
         answer: "up",
         explanation:
           "移動平均線が上向きになっており、上昇トレンドが期待される局面です。",
       },
       {
         tickerName: "バーチャル重工",
-        chartData: JSON.stringify([
-          200, 198, 199, 195, 196, 192, 193, 190, 191, 188,
-        ]),
+        chartData: [200, 198, 199, 195, 196, 192, 193, 190, 191, 188],
         answer: "down",
         explanation:
           "高値を切り下げており、下降トレンドが継続する可能性が高い局面です。",
       },
       {
         tickerName: "イマジナリー銀行",
-        chartData: JSON.stringify([
-          150, 155, 148, 160, 152, 165, 158, 170, 162, 175,
-        ]),
+        chartData: [150, 155, 148, 160, 152, 165, 158, 170, 162, 175],
         answer: "up",
         explanation:
           "下値を切り上げながら上昇しており、強い買いの勢いが見られます。",
