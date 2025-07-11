@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx prisma migrate deploy && npx prisma generate && tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/app.js",
+    "start:prod": "npx prisma migrate deploy && npm run prisma:seed && node dist/app.js",
     "dev": "nodemon src/app.ts",
     "prisma:seed": "ts-node prisma/seed.ts"
   },
