@@ -50,6 +50,25 @@ app.get("/api/lessons/:id", async (req: Request, res: Response) => {
   }
 });
 
+// ランダムにクイズを1件取得するAPI
+app.get("/api/quiz-charts/random", async (req: Request, res: Response) => {
+  try {
+    const quizCount = await prisma.quizChart.count();
+    if (quizCount === 0) {
+      return res.status(404).json({ error: "No quiz found" });
+    }
+    // ランダムな件数をスキップして1件取得
+    const skip = Math.floor(Math.random() * quizCount);
+    const quiz = await prisma.quizChart.findFirst({
+      skip: skip,
+    });
+    res.json(quiz);
+  } catch (error) {
+    console.error("Error fetching random quiz:", error);
+    res.status(500).json({ error: "Failed to fetch quiz" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

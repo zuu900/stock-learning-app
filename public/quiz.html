@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>実践問題 - 株価予測クイズ</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+      #chart-container {
+        position: relative;
+        height: 40vh;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      #answer-buttons button {
+        font-size: 1.2em;
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+      }
+      #result-area {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+      }
+      .correct {
+        background-color: #e0f7fa;
+        border: 1px solid #00acc1;
+      }
+      .incorrect {
+        background-color: #ffebee;
+        border: 1px solid #f44336;
+      }
+      #next-question {
+        display: none;
+        margin-top: 15px;
+        font-size: 1em;
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+    </style>
+    <!-- Chart.jsライブラリを読み込み -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>実践問題 - 株価予測クイズ</h1>
+    <p>
+      このチャートの次の値動きはどうなる？「上がる」か「下がる」か予想しよう！
+    </p>
+    <h2 id="ticker-name">銘柄名: 読み込み中...</h2>
+
+    <div id="chart-container">
+      <canvas id="stockChart"></canvas>
+    </div>
+
+    <div id="answer-buttons">
+      <button id="up-btn">📈 上がる</button>
+      <button id="down-btn">📉 下がる</button>
+    </div>
+
+    <div id="result-area"></div>
+    <button id="next-question">次の問題へ</button>
+
+    <hr style="margin-top: 30px" />
+    <a href="/">学習コンテンツ一覧に戻る</a>
+
+    <script>
+      const tickerNameEl = document.getElementById("ticker-name");
+      const upBtn = document.getElementById("up-btn");
+      const downBtn = document.getElementById("down-btn");
+      const resultArea = document.getElementById("result-area");
+      const nextBtn = document.getElementById("next-question");
+      const ctx = document.getElementById("stockChart").getContext("2d");
+      let chart;
+      let quizData;
+
+      async function fetchQuiz() {
+        try {
+          const response = await fetch("/api/quiz-charts/random");
+          quizData = await response.json();
+
+          // chartDataが文字列の場合、JSONとしてパースする
+          if (typeof quizData.chartData === "string") {
+            quizData.chartData = JSON.parse(quizData.chartData);
+          }
+
+          tickerNameEl.textContent = `銘柄名: ${quizData.tickerName}`;
+          drawChart(quizData.chartData);
+        } catch (error) {
+          console.error(error);
+          tickerNameEl.textContent = "クイズの読み込みに失敗しました。";
+        }
+      }
+
+      function drawChart(data) {
+        if (chart) {
+          chart.destroy();
+        }
+        chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.map((_, i) => i + 1), // X軸のラベル (1, 2, 3...)
+            datasets: [
+              {
+                label: "株価",
+                data: data,
+                borderColor: "rgba(75, 192, 192, 1)",
+                tension: 0.1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { title: { display: true, text: "期間" } } },
+          },
+        });
+      }
+
+      function handleAnswer(userAnswer) {
+        upBtn.disabled = true;
+        downBtn.disabled = true;
+
+        const isCorrect = userAnswer === quizData.answer;
+
+        resultArea.classList.add(isCorrect ? "correct" : "incorrect");
+        resultArea.innerHTML = `
+          <h3>${isCorrect ? "正解！" : "不正解..."}</h3>
+          <p>正解は「${
+            quizData.answer === "up" ? "上がる" : "下がる"
+          }」でした。</p>
+          <p><strong>解説:</strong> ${quizData.explanation}</p>
+        `;
+        nextBtn.style.display = "block";
+      }
+
+      upBtn.addEventListener("click", () => handleAnswer("up"));
+      downBtn.addEventListener("click", () => handleAnswer("down"));
+      nextBtn.addEventListener("click", () => {
+        window.location.reload(); // ページをリロードして次の問題へ
+      });
+
+      // ページ読み込み時にクイズを取得
+      fetchQuiz();
+    </script>
+  </body>
+</html>

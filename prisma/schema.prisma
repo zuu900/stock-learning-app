@@ -22,3 +22,12 @@ model StockLesson {
   createdAt DateTime @default(now()) // 作成日時
   updatedAt DateTime @updatedAt // 更新日時
 }
+
+model QuizChart {
+  id          Int      @id @default(autoincrement())
+  tickerName  String   // 銘柄名 (例: 「架空テック株」)
+  chartData   Json     // チャートの価格データをJSON形式で保存
+  answer      String   // 正解 ("up" または "down")
+  explanation String   // 解説文
+  createdAt   DateTime @default(now())
+}
