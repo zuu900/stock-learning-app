@@ -4,25 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>株学習アプリ</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h1>株学習コンテンツ一覧</h1>
-    <div id="lessons-container">
-      <p>データを読み込み中...</p>
-    </div>
+    <header>
+      <h1>株学習アプリ</h1>
+    </header>
+    <main class="container">
+      <div id="lessons-container">
+        <p>データを読み込み中...</p>
+      </div>
 
-    <div
-      style="
-        margin-bottom: 20px;
-        padding: 15px;
-        background-color: #f0f8ff;
-        border-radius: 5px;
-      "
-    >
-      <h3>腕試しをしよう！</h3>
-      <p>学習した知識を使って、実際のチャート予測に挑戦してみましょう。</p>
-      <a href="/quiz.html" style="font-weight: bold">実践問題に挑戦する →</a>
-    </div>
+      <div class="quiz-section">
+        <h3>腕試しをしよう！</h3>
+        <p>学習した知識を使って、実際のチャート予測に挑戦してみましょう。</p>
+        <a href="/quiz.html">実践問題に挑戦する →</a>
+      </div>
+    </main>
 
     <script>
       // ページが読み込まれたらAPIを呼び出す
@@ -34,10 +38,10 @@
           const lessons = await response.json();
 
           // 読み込み中メッセージをクリア
-          container.innerHTML = "";
+          container.innerHTML = "<h2>学習コンテンツ一覧</h2>";
 
           if (lessons.length === 0) {
-            container.innerHTML = "<p>コンテンツがありません。</p>";
+            container.innerHTML += "<p>コンテンツがありません。</p>";
             return;
           }
 
@@ -45,21 +49,17 @@
           lessons.forEach((lesson) => {
             const link = document.createElement("a");
             link.href = `/lesson.html?id=${lesson.id}`;
-            link.style.textDecoration = "none";
-            link.style.color = "inherit";
-            link.style.display = "block"; // aタグをブロック要素にする
+            link.className = "lesson-link";
 
             const lessonDiv = document.createElement("div");
-            lessonDiv.style.border = "1px solid #ccc";
-            lessonDiv.style.padding = "10px";
-            lessonDiv.style.marginBottom = "10px";
-            lessonDiv.style.cursor = "pointer"; // カーソルをポインターに変更
+            lessonDiv.className = "lesson-card";
 
-            const title = document.createElement("h2");
+            const title = document.createElement("h3");
             title.textContent = lesson.title;
 
             const category = document.createElement("p");
-            category.textContent = `カテゴリ: ${lesson.category}`;
+            category.className = "category";
+            category.textContent = lesson.category;
 
             const content = document.createElement("p");
             // コンテンツが長い場合に省略して表示
@@ -77,7 +77,8 @@
             container.appendChild(link);
           });
         } catch (error) {
-          container.innerHTML = "<p>データの読み込みに失敗しました。</p>";
+          container.innerHTML =
+            "<h2>学習コンテンツ一覧</h2><p>データの読み込みに失敗しました。</p>";
           console.error(error);
         }
       });
