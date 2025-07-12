@@ -4,13 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>学習コンテンツ詳細</title>
+    <!-- CSSとGoogle Fontsのリンクを追加 -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <div id="lesson-detail-container">
-      <p>データを読み込み中...</p>
-    </div>
-    <br />
-    <a href="/">一覧に戻る</a>
+    <header>
+      <!-- ヘッダータイトルを追加 -->
+      <h1>株学習アプリ</h1>
+    </header>
+
+    <main class="container">
+      <div id="lesson-detail-container">
+        <p>データを読み込み中...</p>
+      </div>
+      <a href="/" class="back-link">← 一覧に戻る</a>
+    </main>
 
     <script>
       window.addEventListener("DOMContentLoaded", async () => {
@@ -21,7 +35,7 @@
         const lessonId = urlParams.get("id");
 
         if (!lessonId) {
-          container.innerHTML = "<p>IDが指定されていません。</p>";
+          container.innerHTML = "<h1>IDが指定されていません。</h1>";
           return;
         }
 
@@ -35,11 +49,17 @@
 
           const lesson = await response.json();
 
+          // 新しいCSSクラスを適用するようにHTML構造を変更
           container.innerHTML = `
-            <h1>${lesson.title}</h1>
-            <p><strong>カテゴリ:</strong> ${lesson.category}</p>
-            <hr>
-            <p>${lesson.content.replace(/\n/g, "<br>")}</p>
+            <div class="lesson-detail-content">
+              <h1>${lesson.title}</h1>
+              <div class="meta-info">
+                <strong>カテゴリ:</strong> ${lesson.category}
+              </div>
+              <div class="content-body">
+                <p>${lesson.content.replace(/\n/g, "<br>")}</p>
+              </div>
+            </div>
           `;
         } catch (error) {
           container.innerHTML = `<p>${error.message}</p>`;
